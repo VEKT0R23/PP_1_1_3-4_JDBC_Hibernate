@@ -7,13 +7,14 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class UserDaoJDBCImpl implements UserDao {
-    private final Connection connection = Util.getConnection();
+//    private final Connection connection = Util.getConnection();
 
     public UserDaoJDBCImpl() {
 
     }
 
     public void createUsersTable() {
+        Connection connection = Util.getConnection();
         try (PreparedStatement preparedStatement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS users" +
                 "(id BIGINT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(100), lastName VARCHAR(100), age INT)")) {
             preparedStatement.executeUpdate();
@@ -27,10 +28,19 @@ public class UserDaoJDBCImpl implements UserDao {
             }
             e.printStackTrace();
             System.out.println("Не удалось создать таблицу");
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    System.out.println("Не удалось закрыть connection");
+                }
+            }
         }
     }
 
     public void dropUsersTable() {
+        Connection connection = Util.getConnection();
         try (PreparedStatement preparedStatement = connection.prepareStatement("DROP TABLE IF EXISTS users")) {
             preparedStatement.executeUpdate();
             System.out.println("Таблица удалена ");
@@ -43,10 +53,19 @@ public class UserDaoJDBCImpl implements UserDao {
             }
             e.printStackTrace();
             System.out.println("Таблицу удалить не удалось");
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    System.out.println("Не удалось закрыть connection");
+                }
+            }
         }
     }
 
     public void saveUser(String name, String lastName, byte age) {
+        Connection connection = Util.getConnection();
         try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO users(name, lastName, age) VALUES(?,?,?)")) {
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, lastName);
@@ -62,10 +81,19 @@ public class UserDaoJDBCImpl implements UserDao {
             }
             e.printStackTrace();
             System.out.println("Не удалось добавить в базу User с именем – " + name);
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    System.out.println("Не удалось закрыть connection");
+                }
+            }
         }
     }
 
     public void removeUserById(long id) {
+        Connection connection = Util.getConnection();
         try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM users WHERE id = ?")) {
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
@@ -79,10 +107,19 @@ public class UserDaoJDBCImpl implements UserDao {
             }
             e.printStackTrace();
             System.out.println("Не удалось удалить User");
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    System.out.println("Не удалось закрыть connection");
+                }
+            }
         }
     }
 
     public List<User> getAllUsers() {
+        Connection connection = Util.getConnection();
         List<User> allUser = new ArrayList<>();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, name, lastName, age FROM users")) {
@@ -106,11 +143,20 @@ public class UserDaoJDBCImpl implements UserDao {
             }
             e.printStackTrace();
             System.out.println("Не удалось получить User-ов");
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    System.out.println("Не удалось закрыть connection");
+                }
+            }
         }
         return allUser;
     }
 
     public void cleanUsersTable() {
+        Connection connection = Util.getConnection();
         try (PreparedStatement preparedStatement = connection.prepareStatement("TRUNCATE users")) {
             preparedStatement.executeUpdate();
             System.out.println("Таблица очищена");
@@ -123,6 +169,14 @@ public class UserDaoJDBCImpl implements UserDao {
             }
             e.printStackTrace();
             System.out.println("Не удалось очистить");
+        } finally {
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    System.out.println("Не удалось закрыть connection");
+                }
+            }
         }
     }
 }
