@@ -16,7 +16,6 @@ public class UserDaoJDBCImpl implements UserDao {
     public void createUsersTable() {
         try (PreparedStatement preparedStatement = connection.prepareStatement("CREATE TABLE IF NOT EXISTS users" +
                 "(id BIGINT PRIMARY KEY AUTO_INCREMENT, name VARCHAR(100), lastName VARCHAR(100), age INT)")) {
-            connection.setAutoCommit(false);
             preparedStatement.executeUpdate();
             System.out.println("Таблица создана");
             connection.commit();
@@ -33,7 +32,6 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void dropUsersTable() {
         try (PreparedStatement preparedStatement = connection.prepareStatement("DROP TABLE IF EXISTS users")) {
-            connection.setAutoCommit(false);
             preparedStatement.executeUpdate();
             System.out.println("Таблица удалена");
             connection.commit();
@@ -50,7 +48,6 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void saveUser(String name, String lastName, byte age) {
         try (PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO users(name, lastName, age) VALUES(?,?,?)")) {
-            connection.setAutoCommit(false);
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, lastName);
             preparedStatement.setByte(3, age);
@@ -70,7 +67,6 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void removeUserById(long id) {
         try (PreparedStatement preparedStatement = connection.prepareStatement("DELETE FROM users WHERE id = ?")) {
-            connection.setAutoCommit(false);
             preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
             System.out.println("User удален");
@@ -90,7 +86,6 @@ public class UserDaoJDBCImpl implements UserDao {
         List<User> allUser = new ArrayList<>();
 
         try (PreparedStatement preparedStatement = connection.prepareStatement("SELECT id, name, lastName, age FROM users")) {
-            connection.setAutoCommit(false);
             ResultSet resultSet = preparedStatement.executeQuery();
 
             while (resultSet.next()) {
@@ -117,7 +112,6 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void cleanUsersTable() {
         try (PreparedStatement preparedStatement = connection.prepareStatement("TRUNCATE users")) {
-            connection.setAutoCommit(false);
             preparedStatement.executeUpdate();
             System.out.println("Таблица очищена");
             connection.commit();
