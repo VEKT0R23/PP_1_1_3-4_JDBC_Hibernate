@@ -19,6 +19,7 @@ public class User {
     @Column
     private Byte age;
 
+
     public User() {
 
     }
